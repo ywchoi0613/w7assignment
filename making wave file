@@ -1,0 +1,113 @@
+#include <iostream>
+#include <fstream>
+using namespace std;
+int main() {
+	char header[44];
+	ifstream xx("Beatles-LetItBe.wav", ios::binary | ios::in);
+	if (!xx) return 666;
+	xx.read(header, 44 * sizeof(char));
+	short* n;
+	n = (short*)(header + 22);
+	cout << "Numchannels: " << * n << endl;
+	int* fs, * b;
+	fs = (int*)(header + 24);
+	cout << "SampleRate: " << * fs << endl;
+	b = (int*)(header + 28);
+	cout << "ByteRate: " << * b << endl; //Sprint1
+
+	/*int N = fs[0] * 10;
+	short* data;
+	data = new short[N];
+	xx.read((char*)data, N * sizeof(short));
+	xx.close();
+	ofstream yy("my.wav", ios::binary | ios::out);
+	if (!yy) return 666;
+	yy.write(header, 44 * sizeof(char));
+	yy.write((char*)data, N * sizeof(short));
+	yy.close();
+	ofstream zz("my.txt", ios::binary | ios::out);
+	if (!zz) return 888;
+	zz << "Numchannels: " << float(header[22]) << endl;
+	zz << "SampleRate: " << float(header[24]) << endl;
+	zz << "ByteRate: " << float(header[28]) << endl;
+	zz.close(); */ //Sprint2-그대로
+
+	/*short* data;
+	data = new short[100000];
+	xx.read((char*)data, 100000 * sizeof(short));
+	header[22] = 1;
+	n = (short*)(header + 22);
+	header[28] = n[0] * fs[0] * sizeof(short);
+	b = (int*)(header + 28);
+	ofstream yy("my.wav", ios::binary | ios::out);
+	if (!yy) return 666;
+	yy.write(header, 44 * sizeof(char));
+	yy.write((char*)data, 100000 * sizeof(short));
+	yy.close();
+	ofstream zz("my.txt", ios::binary | ios::out);
+	if (!zz) return 888;
+	zz << "Numchannels: " << float(header[22]) << endl;
+	zz << "SampleRate: " << float(header[24]) << endl;
+	zz << "ByteRate: " << float(header[28]) << endl;
+	zz.close();*/ //Sprint2-변형
+
+	/* short* data;
+	data = new short[fs[0]];
+	const float pi = 3.141592;
+	float dt = 1. / fs[0], a = 10000.0, f = 440.0;
+	for (int i = 0; i < fs[0]; i++) {
+		data[i] = (short)(a * sin(2.0 * pi * f * i * dt));
+	}
+	ofstream yy("my.wav", ios::binary | ios::out);
+	if (!yy) return 777;
+	yy.write(header, 44 * sizeof(char));
+	yy.write((char*)data, fs[0] * sizeof(short));
+	yy.close();
+	ofstream zz("my.txt", ios::binary | ios::out);
+	if (!zz) return 888;
+	zz << "Numchannels: " << float(header[22]) << endl;
+	zz << "SampleRate: " << float(header[24]) << endl;
+	zz << "ByteRate: " << float(header[28]) << endl;
+	zz.close(); */ //Sprint3
+
+	header[22] = 1;
+	n = (short*)(header + 22);
+	header[28] = header[22] * header[24] * sizeof(short);
+	b = (int*)(header + 28);
+	short* data;
+	data = new short[fs[0]];
+	const float pi = 3.141592;
+	float dt = 1. / fs[0], a = 10000.0, f = 261.63;
+	for (int i = 0; i < fs[0]; i++) {
+		data[i] = (short)(a * sin(2.0 * pi * f * i * dt));
+	}
+	ofstream yy("my.wav", ios::binary | ios::out);
+	if (!yy) return 777;
+	yy.write(header, 44 * sizeof(char));
+	yy.write((char*)data, fs[0] * sizeof(short));
+	f = 329.63;
+	for (int i = 0; i < fs[0]; i++) {
+		data[i] = (short)(a * sin(2.0 * pi * f * i * dt));
+	}
+	yy.write((char*)data, fs[0] * sizeof(short));
+	f = 392.00;
+	for (int i = 0; i < fs[0]; i++) {
+		data[i] = (short)(a * sin(2.0 * pi * f * i * dt));
+	}
+	yy.write((char*)data, fs[0] * sizeof(short));
+	short* data2;
+	data2 = new short[fs[0] * 2];
+	f = 523.25;
+	a = 10000.0;
+	for (int i = 0; i < fs[0]*2; i++) {
+		data2[i] = (short)(a * sin(2.0 * pi * f * i * dt));
+	}
+	yy.write((char*)data2, fs[0] * 2 * sizeof(short));
+	yy.close();
+	ofstream zz("my.txt", ios::binary | ios::out);
+	if (!zz) return 888;
+	zz << "Numchannels: " << float(header[22]) << endl;
+	zz << "SampleRate: " << float(header[24]) << endl;
+	zz << "ByteRate: " << float(header[28]) << endl;
+	zz.close(); //Sprint4
+}
